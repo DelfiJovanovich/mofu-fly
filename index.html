@@ -57,16 +57,16 @@
   #logo-wrap {
     display: flex;
     justify-content: center;
-    margin-bottom: -20px;
-    z-index: 2;
+    margin-bottom: -60px;
+    z-index: 3;
     position: relative;
   }
   #logo-wrap img {
-    width: 180px;
+    width: 240px;
     height: auto;
-    border-radius: 20px;
-    border: 4px solid white;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border-radius: 24px;
+    border: 5px solid white;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18);
   }
   .card {
     background: white;
@@ -144,9 +144,70 @@
     font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: background 0.15s;
   }
   .btn-menu:hover { background: #fff0eb; }
+
+  /* ── PINZA ── */
+  #claw-wrap {
+    position: fixed;
+    top: 0;
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #claw-rail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14px;
+    background: linear-gradient(180deg, #888 0%, #bbb 60%, #888 100%);
+    z-index: 49;
+    pointer-events: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  }
+  #claw-wire {
+    width: 4px;
+    background: linear-gradient(180deg, #666, #999);
+    border-radius: 2px;
+  }
+  #claw-head {
+    width: 48px;
+    height: 22px;
+    background: linear-gradient(180deg, #888, #555);
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  #claw-head::before, #claw-head::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    width: 10px;
+    height: 20px;
+    background: #666;
+    border-radius: 0 0 10px 10px;
+  }
+  #claw-head::before { left: 6px;  transform: rotate(-18deg); transform-origin: top center; }
+  #claw-head::after  { right: 6px; transform: rotate(18deg);  transform-origin: top center; }
+  #claw-mofu {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-top: 6px;
+    display: none;
+  }
 </style>
 </head>
 <body>
+
+<!-- RIEL Y PINZA -->
+<div id="claw-rail"></div>
+<div id="claw-wrap">
+  <div id="claw-wire"></div>
+  <div id="claw-head"></div>
+  <img id="claw-mofu" src="" alt="">
+</div>
 
 <!-- MOFUS CAYENDO — siempre visibles en todas las pantallas, 3 tipos -->
 <img class="fall-mofu" src="mofu-bird.png"    style="left:4%;  animation-duration:5.2s; animation-delay:0s;">
@@ -212,6 +273,100 @@
 </div>
 
 <script>
+// ── PINZA ───────────────────────────────────────
+(function() {
+  const wrap     = document.getElementById('claw-wrap');
+  const wire     = document.getElementById('claw-wire');
+  const mofuImg  = document.getElementById('claw-mofu');
+  const mofus    = ['mofu-bird.png','mofu-festeja.png','mofu-llora.png'];
+
+  let x        = 80;       // posición horizontal (px)
+  let wireH    = 14;       // altura del cable (arriba del riel)
+  let dir      = 1;        // dirección horizontal
+  let clawState = 'moving';// moving | descending | holding | ascending | releasing
+  let stateTimer = 0;
+  let nextGrab = randomInterval();
+  let grabbed  = false;
+
+  function randomInterval() { return 180 + Math.random() * 200; } // frames entre garras
+
+  function tick() {
+    stateTimer++;
+
+    if (clawState === 'moving') {
+      x += dir * 1.8;
+      if (x > window.innerWidth - 60) dir = -1;
+      if (x < 30) dir = 1;
+
+      if (stateTimer >= nextGrab) {
+        clawState = 'descending';
+        stateTimer = 0;
+        // elegir mofu al azar
+        mofuImg.src = mofus[Math.floor(Math.random() * mofus.length)];
+        mofuImg.style.display = 'none';
+        grabbed = false;
+      }
+
+    } else if (clawState === 'descending') {
+      wireH += 3;
+      if (wireH >= 180) {
+        clawState = 'holding';
+        stateTimer = 0;
+        mofuImg.style.display = 'block';
+        grabbed = true;
+      }
+
+    } else if (clawState === 'holding') {
+      if (stateTimer >= 30) {
+        clawState = 'ascending';
+        stateTimer = 0;
+      }
+
+    } else if (clawState === 'ascending') {
+      wireH -= 3;
+      x += dir * 1.2;
+      if (x > window.innerWidth - 60) dir = -1;
+      if (x < 30) dir = 1;
+      if (wireH <= 14) {
+        wireH = 14;
+        clawState = 'releasing';
+        stateTimer = 0;
+      }
+
+    } else if (clawState === 'releasing') {
+      if (stateTimer >= 40) {
+        // soltar: el mofu cae con animación CSS
+        const fallen = document.createElement('img');
+        fallen.src = mofuImg.src;
+        fallen.style.cssText = `
+          position:fixed; width:80px; height:80px; object-fit:contain;
+          left:${x - 40}px; top:${wireH + 50}px; z-index:48;
+          pointer-events:none;
+          animation: fallDown 2.5s ease-in forwards;
+          opacity:1;
+        `;
+        document.body.appendChild(fallen);
+        setTimeout(() => fallen.remove(), 2600);
+
+        mofuImg.style.display = 'none';
+        grabbed = false;
+        clawState = 'moving';
+        stateTimer = 0;
+        nextGrab = randomInterval();
+      }
+    }
+
+    // aplicar posición
+    wrap.style.left = (x - 24) + 'px';
+    wrap.style.top  = '0px';
+    wire.style.height = wireH + 'px';
+
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+})();
+
 // ── BIRD IMAGE ──────────────────────────────────
 const birdImg = new Image();
 let birdLoaded = false;
