@@ -149,20 +149,20 @@
 <body>
 
 <!-- MOFUS CAYENDO — siempre visibles en todas las pantallas, 3 tipos -->
-<img class="fall-mofu" src="mofu-bird.PNG"    style="left:4%;  animation-duration:5.2s; animation-delay:0s;">
-<img class="fall-mofu" src="mofu-llora.PNG"   style="left:14%; animation-duration:7.1s; animation-delay:-2.5s;">
-<img class="fall-mofu" src="mofu-festeja.PNG" style="left:24%; animation-duration:4.8s; animation-delay:-1s;">
-<img class="fall-mofu" src="mofu-bird.PNG"    style="left:36%; animation-duration:6.3s; animation-delay:-4s;">
-<img class="fall-mofu" src="mofu-festeja.PNG" style="left:48%; animation-duration:5.6s; animation-delay:-0.5s;">
-<img class="fall-mofu" src="mofu-llora.PNG"   style="left:60%; animation-duration:4.4s; animation-delay:-3s;">
-<img class="fall-mofu" src="mofu-bird.PNG"    style="left:72%; animation-duration:6.8s; animation-delay:-1.8s;">
-<img class="fall-mofu" src="mofu-festeja.PNG" style="left:82%; animation-duration:5.0s; animation-delay:-5s;">
-<img class="fall-mofu" src="mofu-llora.PNG"   style="left:92%; animation-duration:4.1s; animation-delay:-2s;">
+<img class="fall-mofu" src="mofu-bird.png"    style="left:4%;  animation-duration:5.2s; animation-delay:0s;">
+<img class="fall-mofu" src="mofu-llora.png"   style="left:14%; animation-duration:7.1s; animation-delay:-2.5s;">
+<img class="fall-mofu" src="mofu-festeja.png" style="left:24%; animation-duration:4.8s; animation-delay:-1s;">
+<img class="fall-mofu" src="mofu-bird.png"    style="left:36%; animation-duration:6.3s; animation-delay:-4s;">
+<img class="fall-mofu" src="mofu-festeja.png" style="left:48%; animation-duration:5.6s; animation-delay:-0.5s;">
+<img class="fall-mofu" src="mofu-llora.png"   style="left:60%; animation-duration:4.4s; animation-delay:-3s;">
+<img class="fall-mofu" src="mofu-bird.png"    style="left:72%; animation-duration:6.8s; animation-delay:-1.8s;">
+<img class="fall-mofu" src="mofu-festeja.png" style="left:82%; animation-duration:5.0s; animation-delay:-5s;">
+<img class="fall-mofu" src="mofu-llora.png"   style="left:92%; animation-duration:4.1s; animation-delay:-2s;">
 
 <!-- WELCOME -->
 <div class="screen" id="welcome">
   <div id="logo-wrap">
-    <img id="logo-img" src="mofu-logo.PNG" alt="Mofu Club" onerror="this.style.display='none'">
+    <img id="logo-img" src="mofu-logo.png" alt="Mofu Club" onerror="this.style.display='none'">
   </div>
   <div class="card">
     <div class="game-title">✦ Mofu Fly ✦</div>
@@ -216,7 +216,7 @@
 const birdImg = new Image();
 let birdLoaded = false;
 birdImg.onload  = () => { birdLoaded = true; };
-birdImg.src = 'mofu-bird.PNG';
+birdImg.src = 'mofu-bird.png';
 
 // ── GAME SETUP ──────────────────────────────────
 const W = 460, H = 560, FLOOR = 60, PIPE_W = 52, GAP = 210;
@@ -401,7 +401,7 @@ function showResult() {
 
   const mofuImg = document.getElementById('r-mofu-img');
   const emojiEl = document.getElementById('r-emoji');
-  mofuImg.src = score >= 5 ? 'mofu-festeja.PNG' : 'mofu-llora.PNG';
+  mofuImg.src = score >= 5 ? 'mofu-festeja.png' : 'mofu-llora.png';
   mofuImg.style.display = 'block';
   emojiEl.style.display = 'none';
 
